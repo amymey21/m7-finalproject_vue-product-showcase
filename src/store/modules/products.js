@@ -1,3 +1,4 @@
+// import apiClient from "@/api/apiClient";
 import axios from "axios";
 
 export default {
@@ -24,7 +25,9 @@ export default {
       commit("SET_LOADING", true);
       commit("SET_ERROR", null);
       try {
-        const response = await axios.get("/products");
+        // const response = await apiClient.get("/products");
+        const response = await axios.get("https://fakestoreapi.com/products");
+        console.log("Productos obtenidos:", response.data);
         commit("SET_PRODUCTS", response.data);
       } catch (err) {
         commit("SET_ERROR", "No se pudo cargar los productos");

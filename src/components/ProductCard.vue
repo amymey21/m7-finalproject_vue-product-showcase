@@ -1,25 +1,39 @@
 <script setup>
-import { onMounted } from 'vue';
+import { useStore } from 'vuex';
+// import { defineProps, computed } from 'vue';
+import { computed } from 'vue';
 
-defineProps({
+const props = defineProps({
   product: {
     type: Object,
-    required: true
-  }
+    required: true,
+  },
 });
 
-onMounted(() => {
-  console.log('ProductCard mounted');
-});
+const store = useStore()
+
+const isFavourite = computed(() =>
+  store.getters['favourites/isFavourite'](props.product.id)
+);
+
+
+function toggleFavourite() {
+  if (isFavourite.value) {
+    store.commit('favourites/removeFavourite', props.product.id);
+  } else {
+    store.commit('favourites/addFavourite', props.product);
+  }
+}
 </script>
 
 <template>
-  <div>
-    <div class="product-card ">
-      <img :src="product.image" alt="Product Image" width="100" />
-      <h3>{{ product.title }}</h3>
-      <span>${{ product.price }}</span>
-    </div>
+  <div class="card">
+    <img :src="product.image" :alt="product.title" />
+    <h3> {{ product.title }} </h3>
+    <p>US$ {{ product.price }} </p>
+    <button @click="toggleFavourite">
+      {{ isFavourite ? 'Remove from Favourites' : 'Add to Favourites' }}
+    </button>
   </div>
 </template>
 
