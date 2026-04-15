@@ -1,54 +1,36 @@
 <script setup>
 import ProductCard from './ProductCard.vue';
-import { onMounted, ref } from 'vue';
-import axios from 'axios';
-import { computed } from 'vue';
+import { onMounted, computed } from 'vue';
+import { useStore } from 'vuex';
 
-const products = ref([]);
-const loading = ref(true);
-const error = ref(null);
+const store = useStore()
 
-const selectedCategory = ref(''); //muestra todo
+onMounted(() => {
+  store.dispatch('products/fetchProducts')
+})
 
+const products = computed(() => store.getters['products/allProducts']);
+const loading = computed(() => store.state.products.loading);
+const error = computed(() => store.state.products.error);
+
+// Categoría seleccionada desde VUEX
+const selectedCategory = computed(() => store.getters['filters/currentCategory']);
+
+// Productos filtrados según la categoría seleccionada
 const filteredProducts = computed(() => {
-  if (!selectedCategory.value) {
-    return products.value;
-  }
-  return products.value.filter(product => product.category === selectedCategory.value);
-});
-
-onMounted(async () => {
-  try {
-    const response = await axios.get('http://fakestoreapi.com/products')
-    products.value = response.data;
-  } catch (err) {
-    error.value = 'Failed to load products. Please try again later.';
-    console.error(err);
-  } finally {
-    loading.value = false;
-  }
-});
+  // const all = store.getters['products/allProducts']
+  if (!selectedCategory.value) return products.value
+  return products.value.filter(product => product.category === selectedCategory.value)
+})
 </script>
 
 <template>
   <div>
-    <div class="selection">
-      <label for="category">Filtrar por categoría:</label>
-      <select id="category" v-model="selectedCategory">
-        <option value="">Todas</option>
-        <option value="electronics">Electrónica</option>
-        <option value="jewelery">Joyería</option>
-        <option value="men's clothing">Ropa de hombre</option>
-        <option value="women's clothing">Ropa de mujer</option>
-      </select>
-    </div>
-
     <p v-if="loading">Cargando productos...</p>
     <p v-else-if="error">{{ error }}</p>
-    <!-- empty -->
-    <p v-else-if="filteredProducts.length === 0">No hay productos disponibles</p>
+    <p v-else-if="products.length === 0">No hay productos disponibles</p>
 
-    <ProductCard v-for="product in filteredProducts" :key="product.id" :product="product" />
+    <ProductCard v-else v-for="product in filteredProducts" :key="product.id" :product="product" />
   </div>
 </template>
 
