@@ -1,7 +1,6 @@
 <script setup>
-
 defineOptions({
-  name: 'Footer'
+  name: "Footer",
 });
 </script>
 
