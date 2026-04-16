@@ -15,6 +15,7 @@ const categories = [
   { title: "Joyería", value: "jewelery" },
   { title: "Ropa de hombre", value: "men's clothing" },
   { title: "Ropa de mujer", value: "women's clothing" },
+  { title: "Ropa de niños", value: "kids' clothing" }, //Cat. adicional para pruebas
 ];
 </script>
 
