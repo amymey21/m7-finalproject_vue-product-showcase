@@ -1,7 +1,7 @@
 <script setup>
-import { useStore } from 'vuex';
-// import { defineProps, computed } from 'vue';
-import { computed } from 'vue';
+import { useStore } from "vuex";
+import { defineProps, computed } from 'vue';
+
 
 const props = defineProps({
   product: {
@@ -10,42 +10,28 @@ const props = defineProps({
   },
 });
 
-const store = useStore()
+const store = useStore();
 
 const isFavourite = computed(() =>
-  store.getters['favourites/isFavourite'](props.product.id)
+  store.getters["favourites/isFavourite"](props.product.id)
 );
 
-
-function toggleFavourite() {
-  if (isFavourite.value) {
-    store.commit('favourites/removeFavourite', props.product.id);
-  } else {
-    store.commit('favourites/addFavourite', props.product);
-  }
+const toggleFavs = () => {
+  store.dispatch("favourites/toggleFavs", props.product);
 }
 </script>
 
 <template>
-  <div class="card">
-    <img :src="product.image" :alt="product.title" />
-    <h3> {{ product.title }} </h3>
-    <p>US$ {{ product.price }} </p>
-    <button @click="toggleFavourite">
-      {{ isFavourite ? 'Remove from Favourites' : 'Add to Favourites' }}
-    </button>
-  </div>
+  <v-card class="text-center pt-4" variant="tonal">
+    <v-img class="mx-3" :src="product.image" :alt="product.title" height="200px" />
+    <v-card-title class="text-truncate"> {{ product.title }}</v-card-title>
+    <v-card-text class="text-h5">US$ {{ product.price }}</v-card-text>
+    <v-card-actions class="justify-center">
+      <v-btn @click="toggleFavs"> Agregar a favoritos
+        <v-icon color='red' :icon="isFavourite ? 'mdi-heart' : 'mdi-heart-outline'"></v-icon>
+      </v-btn>
+    </v-card-actions>
+  </v-card>
 </template>
 
-<style scoped>
-.product-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-width: 25%;
-  max-width: 50%;
-  border: 1px solid #7dbdc0;
-  padding: 1rem;
-  margin: 5rem;
-}
-</style>
+<style scoped></style>

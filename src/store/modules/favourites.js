@@ -6,7 +6,7 @@ export default {
   mutations: {
     ADD_FAVOURITE(state, product) {
       //Evitar duplicados
-      if (!state.favs.find((product) => product.id === product.id)) {
+      if (!state.favs.find((fav) => fav.id === product.id)) {
         state.favs.push(product);
       }
     },
@@ -20,13 +20,13 @@ export default {
       state.favs.some((product) => product.id === id),
   },
 
-  //   actions: {
-  //     toggleFavs({ commit, state }, product) {
-  //       if (state.favs.some((fav) => fav.id === product.id)) {
-  //         commit("REMOVE_FAVOURITE", product.id);
-  //       } else {
-  //         commit("ADD_FAVOURITE", product);
-  //       }
-  //     },
-  //   },
+    actions: {
+      toggleFavs({ commit, state }, product) {
+        if (state.favs.some((fav) => fav.id === product.id)) {
+          commit("REMOVE_FAVOURITE", product.id);
+        } else {
+          commit("ADD_FAVOURITE", product);
+        }
+      },
+    },
 };
